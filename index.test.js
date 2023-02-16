@@ -36,4 +36,25 @@ describe('Band and Musician Models', () => {
         expect(bandWithMusicians[0].name).toBe('Drake');
         expect(bandWithMusicians[1].name).toBe('Dude');
     })
+
+    test('can create a Song', async () => {
+        const newSong = await Song.create({title: 'Pipe Down', year: 2021})
+        const findSong = await Song.findByPk(newSong.id);
+        expect(findSong.title).toBe('Pipe Down');
+        expect(findSong.year).toBe(2021);
+    })
+
+    test('can add multiple songs to a band', async () => {
+        const newBand = await Band.create({name: 'OVO', genre: 'RnB', showCount: 30});
+        const newSong1 = await Song.create({title: 'Pipe Down', year: 2021});
+        const newSong2 = await Song.create({title: 'Fair Trade', year: 2021});
+        const newSong3 = await Song.create({title: 'N 2 Deep', year: 2021});
+        await newBand.addSong(newSong1);
+        await newBand.addSong(newSong2);
+        await newBand.addSong(newSong3);
+        const bandSongs = await Song.findAll( { where: { bandId: newBand.id } } );
+        expect(bandSongs[0].title).toBe('Pipe Down');
+        expect(bandSongs[1].title).toBe('Fair Trade');
+        expect(bandSongs[2].title).toBe('N 2 Deep');
+    })
 })
