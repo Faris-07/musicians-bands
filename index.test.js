@@ -25,4 +25,15 @@ describe('Band and Musician Models', () => {
         testMusician = await Musician.findOne({where: {name: 'test musician name'}})
         expect(testMusician).toBeInstanceOf(Musician);
     })
+
+    test('can add multiple musicians to a band', async () => {
+        const newBand = await Band.create({name: 'OVO', genre: 'RnB', showCount: 30});
+        const newMusician1 = await Musician.create({name: 'Drake', instrument: 'Voice'});
+        const newMusician2 = await Musician.create({name: 'Dude', instrument: 'Voice'});
+        await newBand.addMusician(newMusician1);
+        await newBand.addMusician(newMusician2);
+        const bandWithMusicians = await Musician.findAll( { where: { name: 'OVO' } });
+        expect(bandWithMusicians[0].name).toBe('Drake');
+        expect(bandWithMusicians[1].name).toBe('Dude');
+    })
 })
