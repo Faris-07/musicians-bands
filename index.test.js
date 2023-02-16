@@ -57,4 +57,31 @@ describe('Band and Musician Models', () => {
         expect(bandSongs[1].title).toBe('Fair Trade');
         expect(bandSongs[2].title).toBe('N 2 Deep');
     })
+
+    test('allows eager loading', async ()  => {
+        const bands_eager = await Band.findAll({
+            include: [
+                {
+                    model: Musician,
+                    as: 'members'
+                },
+                {
+                    model: Song,
+                    as: 'songs'
+                }
+            ]
+        })
+
+        const eager_band = bands_eager[0]
+
+        const eager_members = eager_band.members
+        const eager_songs = eager_band.songs
+
+        const eager_member_1 = eager_members[0]
+        const eager_song_1 = eager_songs[0]
+
+        expect(eager_member_1.name).toBe('Drake');
+        expect(eager_song_1.title).toBe('Pipe Down');
+
+      })
 })
